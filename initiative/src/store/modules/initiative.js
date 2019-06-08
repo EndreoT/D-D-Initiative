@@ -1,58 +1,66 @@
 // Vuex Initiative module
 
 const state = {
-  currentPlayerId: 0,
-  players: [],
+	currentCharacterGeneratorId: 0,
+	characters: [],
 };
 
 const getters = {
-  currentPlayerId: (state) => state.currentPlayerId,
-  getPlayers: (state) => state.players,
-  // userAvatarImage: (state) => {
-  //   return state.user.avatar_image.path;
-  // },
+	currentCharacterId: (state) => state.currentCharacterGeneratorId,
+	getCharacters: (state) => state.characters,
+	// userAvatarImage: (state) => {
+	//   return state.user.avatar_image.path;
+	// },
 };
 
 const mutations = {
-  incrementCurrentId(state) {
-    state.currentPlayerId++;
-  },
-  addPlayer(state, payload) {
-    state.players.push(
-      {
-        id: payload.id,
-        name: payload.name,
-        initiative: payload.initiative,
-      },
-    );
-  },
-  deleteAllPlayers(state) {
-    state.players = [];
-  },
-  // setUser(state, payload) {
-  // 	state.user = payload.user;
-  // }
+	incrementCurrentId(state) {
+		state.currentCharacterGeneratorId++;
+	},
+	addCharacter(state, payload) {
+		state.characters.push(
+			{
+				id: payload.id,
+				name: payload.name,
+				initiative: payload.initiative,
+				isPlayer: payload.isPlayer,
+			},
+		);
+	},
+	deleteAllCharacters(state) {
+		state.characters = [];
+	},
+	deleteCharacter(state, payload) {
+		for (let i = 0; i < state.characters.length; i++) {
+			if (state.characters[i].id === payload.id) {
+				state.characters.splice(i, 1);
+			}
+		}
+	},
 };
 
 const actions = {
-  incrementCurrentId({ commit }) {
-    commit('incrementCurrentId');
-  },
-  addPlayer({ commit }, payload) {
-    commit('addPlayer', payload);
-  },
-  deletePlayers({ commit }) {
-    commit('deleteAllPlayers');
-  },
-  // setUser({ commit }, payload) {
-  // 	commit('setUser', payload);
-  // }
+	incrementCurrentId({ commit }) {
+		commit('incrementCurrentId');
+	},
+	addCharacter({ commit }, payload) {
+		commit('addCharacter', payload);
+	},
+	deleteCharacters({ commit }) {
+		commit('deleteAllCharacters');
+	},
+	deleteCharacter({ commit }, payload) {
+		commit('deleteCharacter', payload);
+	},
+	// setUser({ commit }, payload) {
+	// 	commit('setUser', payload);
+	// }
 };
 
 export default {
-  namespaced: true,
-  state,
-  getters,
-  mutations,
-  actions,
+	namespaced: true,
+	state,
+	getters,
+	mutations,
+	actions,
 };

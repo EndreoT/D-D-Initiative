@@ -2,69 +2,86 @@
   <div class="container">
     <h1>This is an about page</h1>
 
-    <form @submit.prevent="addPlayer">
-      <input v-model="form.name" placeholder="edit me">
+    <form @submit.prevent="addcharacter">
+      <input v-model="form.name" placeholder="character name" required>
       <p>name</p>
-      <input v-model.number="form.initiative" type="number">
+      <input v-model.number="form.initiative" type="number" required>
       <p>Initiative value</p>
+      <input type="checkbox" id="checkbox" v-model="form.isPlayer">
+      <label for="checkbox">Is character</label>
 
       <div class="row justify-content-center">
-        <button type="submit" class="btn btn-primary btn-override">Add Player</button>
+        <button type="submit" class="btn btn-primary btn-override">Add Character</button>
       </div>
     </form>
 
-    <button v-on:click="deletePlayers">Delete all players</button>
+    <button class="btn btn-danger btn-override" v-on:click="deleteCharacters">Delete all characters</button>
     <ol>
-      <li v-for="player in players" :key="player.id">{{ player }}</li>
+      <li class="character" v-for="character in characters" :key="character.id">
+        
+        {{ character }}
+        <button class="btn btn-danger btn-override" v-on:click="deleteCharacter" :data-id="character.id">Delete</button>
+        <input type="checkbox" id="checkbox">
+        <label for="checkbox">Has advantage</label>
+        
+      </li>
     </ol>
   </div>
 </template>
 
 
 <script>
-import Player from "../players/player";
+import Character from "../characters/character";
 
 export default {
   name: "initiative",
   components: {},
   data: () => ({
-    players: [],
+    characters: [],
     form: {
       name: "",
-      initiative: 0
+      initiative: 0,
+      isPlayer: false,
     }
   }),
   // computed: {
   //   totalCategories() {}
   // },
   created() {
-    const players = this.$store.getters["initiative/getPlayers"];
-    players.forEach(player => {
-      this.players.push(new Player(player.id, player.name, player.initiative));
+    const characters = this.$store.getters["initiative/getCharacters"];
+    characters.forEach(character => {
+      this.characters.push(new Character(character.id, character.name, character.initiative));
     });
   },
   methods: {
-    addPlayer() {
-      const playerData = {
-        id: this.$store.getters["initiative/currentPlayerId"],
+    addcharacter() {
+      const characterData = {
+        id: this.$store.getters["initiative/currentCharacterId"],
         name: this.form.name,
-        initiative: this.form.initiative
+        initiative: this.form.initiative,
+        isPlayer: this.form.isPlayer,
       };
 
-      const newPlayer = new Player(
-        playerData.id,
-        playerData.name,
-        playerData.initiative,
+      const newcharacter = new Character(
+        characterData.id,
+        characterData.name,
+        characterData.initiative,
+        this.form.isPlayer,
       );
-      this.$store.dispatch("initiative/addPlayer", playerData);
+      console.log(newcharacter)
+      this.$store.dispatch("initiative/addCharacter", characterData);
       this.form.name = "";
       this.form.initiative = 0;
       this.$store.dispatch("initiative/incrementCurrentId");
-      this.players.push(newPlayer);
+      this.characters.push(newcharacter);
     },
-    deletePlayers() {
-      this.$store.dispatch("initiative/deletePlayers");
-      this.players = 0;
+    deleteCharacters() {
+      this.$store.dispatch("initiative/deleteCharacters");
+      this.characters = [];
+    },
+    deleteCharacter() {
+      console.log(parseInt(event.currentTarget.attributes["data-id"].value))
+
     }
   }
 };
